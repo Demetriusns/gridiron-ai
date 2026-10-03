@@ -97,10 +97,50 @@ visual = alignment truth, `UNVERIFIED_PERSONNEL` tag), G4
 special-teams scope gate, G5 flag-unit handoff (label + verdict,
 never bare).
 
-**Phase 2 — Design detail.** Blitz breakdown (who, from where, what
-kind — zone blitz, creepers, green-dog, stunt games; rates by
-situation) and offensive play design (route combination names,
-blocking schemes, protection, play-action/RPO tags).
+**Phase 2 — Design detail. IMPLEMENTED 2026-10-03.** Four new specialists,
+wired into the analysis order as steps 7–10 (post-snap, after Play Result
+Confirmor; Player Identifier still runs alongside). Order is a dependency
+chain — each step's inputs are settled before it runs:
+
+- **PA/RPO Tagger** (step 7, `agents/playaction-rpo-tagger.md`) — one
+  intent tag per snap (True Dropback / Play-Action / RPO / Designed QB Run
+  / Draw / Screen) + fake detail (who bit) or read detail (read key,
+  decision, right/wrong). Runs FIRST in Phase 2 because Protection
+  Analyst needs its tag. **Resolves council G8**: intent classification
+  (PA vs straight pass, QB run vs designed run) is owned here, in Phase 2.
+- **Blitz Identifier** (step 8, `agents/blitz-identifier.md`) — names the
+  pressure package: who blitzed (by name), from where, what kind. Fixed
+  menu (exact strings, no slashes): Standard (No Blitz) / Overload /
+  Zone Blitz / Creeper (Simulated Pressure) / Green-Dog / Mugged-Up A-Gap
+  / Edge Blitz / All-Out (6+ Rush), with stunt games (T/E, E/T, Double
+  Twist, Loop) as a fixed modifier menu. Resolves every pre-snap pressure
+  indicator from Front Identifier's presentation note as SENT or DROPPED
+  (unlisted rushers → UNACCOUNTED); the show-vs-send record becomes a
+  disguise-rate tendency. "Standard" is base-front-relative (4 from 4-down,
+  3+1 from 3-down), not a literal 4-man count.
+- **Route Reader** (step 9, `agents/route-reader.md`) — names the pass
+  concept from Confirmor's route shape. Fixed 18-concept menu (Mesh,
+  Shallow Cross, Smash, Four Verticals, Dagger, Y-Cross, Yankee, Stick,
+  Flood, Slant-Flat, Levels, Sail, Spot, China, All-Curl, Screens, Go,
+  Unclassified) + motion tag (`Mesh+Jet`) + which route won vs the
+  confirmed coverage and why, structurally. Takes Blitz Identifier's
+  pressure call as input — a concept vs a 4-man rush grades differently
+  than vs an all-out blitz.
+- **Protection Analyst** (step 10, `agents/protection-analyst.md`) —
+  closes the pipeline. Run-blocking scheme menu (Inside/Outside Zone, Duo,
+  Power, Counter, Trap, Draw, Sweep/Pin-Pull) and protection menu (5-man
+  full/half slide, 6-man, 7-man max, PA protection, Empty, Screen).
+  Grades blitz pickup, diagnoses free runners (beaten man vs missed call),
+  attributes every pressure/sack by name. Consumes the intent tag (step 7)
+  and the pressure call (step 8) — no forward references.
+
+Head Analyst extended: steps 7–10 in the order, four new tendency tables
+(blitz rates by situation, concept frequencies vs coverage, protection +
+pressure-attribution, PA/RPO rates + read keys), Phase 2 cross-checks
+(blitz-vs-front, concept-vs-coverage, protection-vs-blitz, tag routing),
+and design notes in Plays to Review. The Phase 3 firewall (no counters)
+is unchanged — design detail sharpens the tendencies; it doesn't earn
+answers yet.
 
 **Phase 3 — "What would work against." LAST.** The Coach:
 counter-suggestions and game-plan answers built on tendencies the
